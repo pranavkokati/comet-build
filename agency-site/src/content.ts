@@ -6,12 +6,13 @@
  * Sections:
  *   1. Site identity (name, logo, nav, social links)
  *   2. Hero
- *   3. About / mission
- *   4. Services
- *   5. Process (how it works)
- *   6. Portfolio (TODO: replace with real client work)
- *   7. Testimonials
- *   8. Contact / footer
+ *   3. Trust strip (logos/names row under the hero)
+ *   4. About / mission
+ *   5. Services
+ *   6. Process (how it works)
+ *   7. Portfolio (TODO: replace with real client work)
+ *   8. Testimonials
+ *   9. Contact / footer
  * ============================================================================
  */
 
@@ -19,8 +20,7 @@
 // 1. SITE IDENTITY
 // ---------------------------------------------------------------------------
 export const site = {
-  // TODO: replace with your agency's real name.
-  name: "[Agency Name]",
+  name: "Comet Builds",
   // Short tagline shown next to the name in the nav bar.
   tagline: "Student Web Design Collective",
   // Swap for a real logo image path (e.g. "/logo.svg") to use an <img> instead
@@ -32,10 +32,10 @@ export const site = {
 // 2. HERO
 // ---------------------------------------------------------------------------
 export const hero = {
-  eyebrow: "Built by students, for our community",
-  headline: "Websites for the people doing good work near you.",
+  eyebrow: "Built by students, for the community",
+  headline: "Websites for the people doing good work.",
   subheadline:
-    "[Agency Name] is a student-run design studio that builds free and low-cost websites for local nonprofits and small businesses — real client work, real impact, real portfolios.",
+    "Comet Builds is a student-run studio that builds free and low-cost websites for local nonprofits, organizations, and small businesses. Our builders dive into real client work and real impact, which help them create strong portfolios.",
   primaryCta: {
     label: "Get a Free Site",
     href: "#contact",
@@ -44,19 +44,32 @@ export const hero = {
     label: "See our work",
     href: "#portfolio",
   },
+  // Shown in the social-proof row under the CTAs ("Trusted by 30+ ...").
+  trustCount: "30+",
 };
 
 // ---------------------------------------------------------------------------
-// 3. ABOUT / MISSION
+// 3. TRUST STRIP — short list of org names/types shown as a row under the
+// hero. Replace with real client names once available.
+// ---------------------------------------------------------------------------
+export const trust: string[] = [
+  "Non-profit Organizations",
+  "Local cafés",
+  "Community Centers",
+  "Small Studios",
+  "Food Banks",
+];
+
+// ---------------------------------------------------------------------------
+// 4. ABOUT / MISSION
 // ---------------------------------------------------------------------------
 export const about = {
-  heading: "Why we do this",
-  // TODO: replace with the real origin story / mission paragraph.
-  body: "We're a group of students who love building things and wanted our class projects to mean something. [Agency Name] pairs student designers and developers with local nonprofits and small businesses who need a website but don't have the budget for one — we get real-world experience, they get a site that actually helps them do their work.",
+  heading: "Real projects = Real Impact",
+  body: "We're a group of students who love building things and wanted our personal projects to mean something. Comet Builds pairs student designers and developers with local nonprofits and small businesses who need a website but don't have the budget for one. The result: we get real-world experience, they get a site that actually helps them with their work.",
 };
 
 // ---------------------------------------------------------------------------
-// 4. SERVICES
+// 5. SERVICES
 // ---------------------------------------------------------------------------
 export type Service = {
   icon: "heart" | "briefcase" | "wrench" | "sparkles";
@@ -75,7 +88,7 @@ export const services: Service[] = [
     icon: "briefcase",
     title: "Small Business Sites",
     description:
-      "A professional storefront for your business — hours, menu or services, location, and a way for customers to reach you.",
+      "A professional storefront for your business with hours, menu or services, locations, and a way for customers to reach you.",
   },
   {
     icon: "wrench",
@@ -86,13 +99,12 @@ export const services: Service[] = [
   {
     icon: "sparkles",
     title: "Brand Refresh",
-    description:
-      "A lightweight redesign — new colors, layout, and copy polish — for organizations that just need a refresh, not a rebuild.",
+    description: "A lightweight redesign with new colors, layout, and polish.",
   },
 ];
 
 // ---------------------------------------------------------------------------
-// 5. PROCESS / HOW IT WORKS
+// 6. PROCESS / HOW IT WORKS
 // ---------------------------------------------------------------------------
 export type ProcessStep = {
   step: string;
@@ -105,11 +117,11 @@ export const process: ProcessStep[] = [
     step: "01",
     title: "Reach out",
     description:
-      "Tell us a bit about your organization and what you need using the form below. It takes five minutes.",
+      "Tell us a bit about your organization and what you need using the form below.",
   },
   {
     step: "02",
-    title: "We scope it",
+    title: "We research your needs",
     description:
       "We'll set up a quick call to understand your goals, then put together a simple plan and timeline.",
   },
@@ -123,12 +135,12 @@ export const process: ProcessStep[] = [
     step: "04",
     title: "You launch",
     description:
-      "We publish your new site and hand off everything you need to keep it running — or we can maintain it for you.",
+      "We publish your new site and hand off everything you need to keep it running, or we can maintain it for you.",
   },
 ];
 
 // ---------------------------------------------------------------------------
-// 6. PORTFOLIO — TODO: replace these placeholder entries with real client
+// 7. PORTFOLIO — TODO: replace these placeholder entries with real client
 // work once projects are completed. Keep the same shape (title, client,
 // description, imageSrc, href).
 // ---------------------------------------------------------------------------
@@ -169,7 +181,7 @@ export const portfolio: PortfolioItem[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// 7. TESTIMONIALS
+// 8. TESTIMONIALS
 // ---------------------------------------------------------------------------
 export type Testimonial = {
   quote: string;
@@ -199,17 +211,13 @@ export const testimonials: Testimonial[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// 8. CONTACT / FOOTER
+// 9. CONTACT / FOOTER
 // ---------------------------------------------------------------------------
 export const contact = {
   heading: "Let's build something",
-  subheading:
-    "Fill out the form and we'll get back to you within a few days.",
+  subheading: "Fill out the form and we'll get back to you in a few business days.",
   // TODO: replace with real contact details.
   email: "hello@example.org",
-  socials: [
-    { label: "Instagram", href: "#" },
-    { label: "LinkedIn", href: "#" },
-    { label: "GitHub", href: "#" },
-  ],
+  // TODO: add social links once decided — leave empty to hide the row.
+  socials: [] as { label: string; href: string }[],
 };
