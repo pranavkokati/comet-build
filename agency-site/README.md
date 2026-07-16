@@ -18,6 +18,26 @@ npm run dev
 
 Then open http://localhost:3000.
 
+## Deploying as static HTML
+
+This project is configured for static export (`output: "export"` in
+`next.config.ts`). To generate plain HTML/CSS/JS files that any static host
+can serve (no Node.js needed to run it — only to build it once):
+
+```bash
+npm install
+npm run build
+```
+
+This produces an `out/` folder containing static files. Upload that folder's
+contents to any static host — Netlify, GitHub Pages, Cloudflare Pages, S3, or
+a plain shared-hosting FTP server all work. To preview it locally before
+deploying:
+
+```bash
+npx serve out
+```
+
 ## Where to edit things
 
 Everything content-related lives in **`src/content.ts`** — open that one file
