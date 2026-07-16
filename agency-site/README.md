@@ -1,10 +1,12 @@
 # Agency Site (placeholder template)
 
 A single-page marketing site for a student-run web design agency, built with
-Next.js (App Router), Tailwind CSS, and Framer Motion. Animated UI primitives
-(hover cards, scroll-linked timeline, animated testimonials, background
-beams) are hand-built in the style of [Aceternity UI](https://ui.aceternity.com/)
-components, living under `src/components/ui/`.
+Next.js (App Router), Tailwind CSS, and Framer Motion. The visual design
+(floating pill nav, neutral/yellow/orange palette, rounded cards, social
+proof row) is modeled on [screwfast.uk](https://screwfast.uk). Animated UI
+primitives (hover cards, scroll-linked timeline, animated testimonials) are
+hand-built in a similar spirit to [Aceternity UI](https://ui.aceternity.com/),
+living under `src/components/ui/`.
 
 This is a **placeholder/showcase** site — all copy, images, and portfolio
 items are clearly marked and meant to be swapped out.
@@ -46,22 +48,29 @@ to update copy without touching any component code:
 | What | Where in `src/content.ts` |
 | --- | --- |
 | Site name / logo / tagline | `site` |
-| Hero headline, subheadline, CTA buttons | `hero` |
+| Hero headline, subheadline, CTA buttons, trust count | `hero` |
+| Trust strip (row under the hero) | `trust` |
 | Mission / about paragraph | `about` |
 | Service cards | `services` |
 | "How it works" steps | `process` |
 | **Portfolio items (real client work)** | `portfolio` — marked with `TODO` comments, replace once projects launch |
 | Testimonial quotes | `testimonials` |
-| Contact email, socials, form heading | `contact` |
+| Contact email, socials, form heading | `contact` — `socials` is empty by default; add `{ label, href }` entries to show the row |
 
 Other things to customize:
 
-- **Colors** — `tailwind.config.js`, under `theme.extend.colors`. Three
-  palettes: `forest` (primary), `cream` (background/neutral), `clay`
-  (accent). Change the hex values to rebrand the whole site.
-- **Fonts** — `src/app/layout.tsx` loads `Fraunces` (display/headings) and
-  `Inter` (body) via `next/font/google`. Swap the imports there and the
-  `fontFamily` mapping in `tailwind.config.js` to change the type pairing.
+- **Colors** — uses Tailwind's built-in `neutral` (base), `yellow` (brand
+  mark), and `orange` (buttons/links/actions) scales directly in components.
+  To rebrand, either swap those class names for a different built-in
+  Tailwind color, or define custom colors under `theme.extend.colors` in
+  `tailwind.config.js` and update the components to use them.
+- **Dark mode** — toggled by `src/components/ThemeToggle.tsx`, which flips
+  the `dark` class on `<html>` and persists the choice in `localStorage`.
+  Tailwind's `darkMode: ["class"]` in `tailwind.config.js` drives every
+  `dark:` variant in the components.
+- **Fonts** — `src/app/layout.tsx` loads `Inter` via `next/font/google` for
+  both headings and body copy. Swap the import there and the `fontFamily`
+  mapping in `tailwind.config.js` to change the typeface.
 - **Logo image** — set `site.logoSrc` in `content.ts` and update
   `src/components/Nav.tsx` / `src/components/Hero.tsx` to render an `<img>`
   instead of the text wordmark.
@@ -77,7 +86,6 @@ Other things to customize:
 `src/components/ui/` contains the reusable animated pieces, each documented
 inline:
 
-- `background-beams.tsx` — drifting light beams behind the hero
 - `card-hover-effect.tsx` — hover-tracking highlight for the Services and
   Portfolio grids
 - `timeline.tsx` — scroll-linked vertical timeline for the process section
