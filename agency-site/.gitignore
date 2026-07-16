@@ -1,0 +1,7 @@
+node_modules
+.next
+dist
+dist-ssr
+*.local
+.vscode/*
+!.vscode/extensions.json
