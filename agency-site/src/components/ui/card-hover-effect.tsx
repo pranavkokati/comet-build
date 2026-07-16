@@ -38,7 +38,7 @@ export function HoverEffect({
           <AnimatePresence>
             {hoveredIndex === idx && (
               <motion.span
-                className="absolute inset-0 block h-full w-full rounded-2xl bg-forest-100"
+                className="absolute inset-0 block h-full w-full rounded-2xl bg-neutral-100 dark:bg-neutral-800"
                 layoutId="hoverBackground"
                 initial={{ opacity: 0 }}
                 animate={{
@@ -52,7 +52,7 @@ export function HoverEffect({
               />
             )}
           </AnimatePresence>
-          <div className="relative z-10 h-full rounded-2xl border border-forest-200/60 bg-cream-50 p-6">
+          <div className="relative z-10 h-full rounded-2xl border border-neutral-200 bg-white p-6 shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] dark:border-neutral-700 dark:bg-neutral-800">
             {item.content}
           </div>
         </div>

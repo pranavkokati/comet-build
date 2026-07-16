@@ -9,13 +9,16 @@ import { FadeInSection } from "@/components/ui/fade-in-section";
 // needed here.
 export function Portfolio() {
   return (
-    <section id="portfolio" className="bg-forest-50 py-24">
+    <section id="portfolio" className="bg-neutral-50 py-20 dark:bg-neutral-800/40">
       <div className="mx-auto max-w-6xl px-6">
-        <FadeInSection className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-semibold text-forest-900 sm:text-4xl">
+        <FadeInSection className="mx-auto max-w-xl text-center">
+          <span className="mb-2 block text-xs font-extrabold tracking-wide text-orange-500 uppercase">
+            Work
+          </span>
+          <h2 className="text-3xl font-extrabold tracking-tight text-neutral-800 sm:text-4xl dark:text-neutral-100">
             Our work
           </h2>
-          <p className="mt-4 text-forest-800/70">
+          <p className="mt-4 text-neutral-600 dark:text-neutral-400">
             {/* TODO(portfolio): swap this line once there's real work to point to */}
             A few of the organizations we&apos;ve built for.
           </p>
@@ -28,13 +31,13 @@ export function Portfolio() {
               content: (
                 <div>
                   {/* TODO(portfolio): replace with <img src={item.imageSrc} /> once available */}
-                  <div className="mb-4 flex aspect-video items-center justify-center rounded-xl border border-dashed border-forest-300 bg-forest-100 text-sm text-forest-500">
+                  <div className="mb-4 flex aspect-video items-center justify-center rounded-xl border border-dashed border-neutral-300 bg-neutral-50 text-sm text-neutral-400 dark:border-neutral-600 dark:bg-neutral-900">
                     Project image placeholder
                   </div>
-                  <h3 className="text-lg font-semibold text-forest-900">
+                  <h3 className="text-base font-bold text-neutral-800 dark:text-neutral-100">
                     {item.client}
                   </h3>
-                  <p className="mt-2 text-sm text-forest-800/70">
+                  <p className="mt-1.5 text-sm text-neutral-600 dark:text-neutral-400">
                     {item.description}
                   </p>
                 </div>
