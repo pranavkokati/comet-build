@@ -8,12 +8,12 @@
   }
 
   body {
-    @apply bg-cream-50 text-forest-900 font-sans antialiased;
+    @apply bg-neutral-100 font-sans text-neutral-600 antialiased dark:bg-neutral-900 dark:text-neutral-400;
   }
 
   h1,
   h2,
   h3 {
-    @apply font-display;
+    @apply font-sans font-extrabold tracking-tight;
   }
 }
