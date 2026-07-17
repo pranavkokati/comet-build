@@ -40,7 +40,6 @@ build step to pull one into). Look for these landmarks:
 | Mission / about paragraph | `<section id="about">` |
 | Service cards | `<section id="services">` |
 | "How it works" steps | the `.timeline` inside the process section |
-| **Portfolio items (real client work)** | `<section id="portfolio">` — marked with `TODO` comments |
 | Testimonial quotes | `<section>` above Contact, `.testi-slide` blocks |
 | Contact email, form heading | `<section id="contact">` |
 
@@ -56,11 +55,30 @@ Other things to customize:
 - **Fonts** — loaded via the Google Fonts `<link>` tags in `<head>`
   (`Inter`). Swap the `href` and the `font-family` in `css/styles.css` to
   change the typeface.
-- **Portfolio images** — drop image files anywhere in the project (e.g. an
-  `images/` folder) and replace the placeholder `<div class="portfolio-img">`
-  blocks with `<img src="images/your-photo.jpg" alt="...">`.
-- **Contact form backend** — the form in the Contact section is UI only
-  (`js/script.js` just shows a success message on submit). To actually
-  receive submissions, either wire it up to a form service (Netlify Forms,
-  Formspree, etc.) by adding the right `action`/`data-*` attributes, or
-  point it at your own backend endpoint.
+## Receiving contact form submissions
+
+The form is wired up to submit to [Formspree](https://formspree.io) (free,
+no backend code) — you just need to point it at your own form:
+
+1. Go to [formspree.io](https://formspree.io) and sign up (free tier is
+   fine — 50 submissions/month).
+2. Click **New Form**, give it a name, and set the destination to whichever
+   email should receive messages.
+3. Formspree gives you an endpoint that looks like
+   `https://formspree.io/f/abcdwxyz`. Copy it.
+4. In `index.html`, find the `<form>` tag in the Contact section and
+   replace `YOUR_FORM_ID` in the `action` attribute with your real ID:
+   ```html
+   <form class="contact-form" id="contactForm" action="https://formspree.io/f/abcdwxyz" method="POST">
+   ```
+5. That's it — no other changes needed. `js/script.js` already submits the
+   form via `fetch` so visitors see the "Thanks, we'll be in touch" message
+   in place, without a page reload or redirect to Formspree's site.
+
+Formspree will send you a confirmation email the first time you submit the
+form for real — you have to click the link in it once to activate the
+form. After that, every submission lands directly in your inbox.
+
+(Netlify Forms works similarly if you end up hosting on Netlify — just add
+`data-netlify="true"` to the `<form>` tag instead and skip Formspree
+entirely.)

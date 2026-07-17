@@ -64,9 +64,28 @@ setInterval(function () {
   showSlide((activeSlide + 1) % slides.length);
 }, 6000);
 
-// ---- Contact form (UI only — no backend wired up) ----
-document.getElementById("contactForm").addEventListener("submit", function (e) {
+// ---- Contact form: submits to Formspree (see the form's `action` in
+// index.html — replace YOUR_FORM_ID with your own before this goes live) ----
+var contactForm = document.getElementById("contactForm");
+contactForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  document.getElementById("contactForm").style.display = "none";
-  document.getElementById("successBox").style.display = "block";
+  var errorEl = document.getElementById("formError");
+  errorEl.style.display = "none";
+
+  fetch(contactForm.action, {
+    method: "POST",
+    body: new FormData(contactForm),
+    headers: { Accept: "application/json" },
+  })
+    .then(function (response) {
+      if (response.ok) {
+        contactForm.style.display = "none";
+        document.getElementById("successBox").style.display = "block";
+      } else {
+        errorEl.style.display = "block";
+      }
+    })
+    .catch(function () {
+      errorEl.style.display = "block";
+    });
 });
