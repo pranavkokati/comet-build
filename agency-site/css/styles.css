@@ -87,6 +87,11 @@
 }
 
 * { box-sizing: border-box; }
+/* Text isn't selectable site-wide (part of the "app-like" feel) — form
+   fields are the one deliberate exception, since visitors need to
+   select/edit what they've typed into the contact form. */
+html, body { -webkit-user-select: none; -moz-user-select: none; user-select: none; }
+input, textarea { -webkit-user-select: text; -moz-user-select: text; user-select: text; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -109,7 +114,11 @@ body.loaded { opacity: 1; }
 /* ---------------- AMBIENT / INTERACTIVE LAYERS ----------------
    Three fixed, full-viewport, pointer-events:none layers, all driven from
    js/script.js and all skipped for prefers-reduced-motion:
-   - .bg-canvas   — quiet starfield + comet, sits behind every section
+   - .bg-canvas   — quiet starfield + comet, painted above every section
+                    but blended additively (mix-blend-mode: screen) so it
+                    reads as light glinting through, visible over every
+                    section's own background instead of being hidden
+                    behind opaque section colors
    - #cursorGlow  — soft blue glow that follows the pointer anywhere on
                     the page (radial-gradient reads --mx/--my, set on
                     :root by a document-wide mousemove listener)
@@ -120,8 +129,9 @@ body.loaded { opacity: 1; }
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1;
+  z-index: 5;
   pointer-events: none;
+  mix-blend-mode: screen;
   transition: opacity var(--dur-slow) var(--ease-soft);
 }
 /* The starfield/comet is a dark-sky effect — hide it in light mode rather
@@ -136,7 +146,7 @@ body.loaded { opacity: 1; }
   inset: 0;
   z-index: 30;
   pointer-events: none;
-  background: radial-gradient(560px circle at var(--mx) var(--my), rgba(var(--glow-color), 0.12), transparent 68%);
+  background: radial-gradient(620px circle at var(--mx) var(--my), rgba(var(--glow-color), 0.22), transparent 70%);
   opacity: 0;
   transition: opacity var(--dur-slow) var(--ease-soft);
 }
@@ -276,15 +286,6 @@ button { font: inherit; }
    (JS marks these is-visible immediately, no scroll trigger needed). */
 .hero .reveal { transition-duration: var(--dur-slow); transition-timing-function: var(--ease-out); }
 
-.social-proof { margin-top: 2.2rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1.1rem; }
-.avatar-stack { display: flex; }
-.avatar-stack .avatar { width: 2rem; height: 2rem; border-radius: 999px; margin-left: -0.5rem; border: 2px solid var(--bg-page); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: #fff; }
-.avatar-stack .avatar:first-child { margin-left: 0; }
-.social-proof-divider { width: 1px; height: 2rem; background: var(--border-color); }
-.rating-row { display: flex; align-items: center; gap: 0.35rem; }
-.rating-row svg { width: 0.85rem; height: 0.85rem; color: var(--ice-500); }
-.rating-text { font-size: 0.85rem; color: var(--text-body); }
-.rating-text b { color: var(--text-heading); }
 
 .hero-visual {
   aspect-ratio: 4/3.2; border-radius: 20px; overflow: hidden; position: relative;
