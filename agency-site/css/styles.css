@@ -223,11 +223,11 @@ button { font: inherit; }
 
 .nav-right { display: flex; align-items: center; gap: 0.5rem; }
 .theme-toggle {
-  width: 2.1rem; height: 2.1rem; border-radius: 999px; border: none; cursor: pointer;
-  background: transparent; color: var(--text-body); display: flex; align-items: center; justify-content: center;
-  transition: background var(--dur-fast) var(--ease-soft), color var(--dur-fast) var(--ease-soft);
+  width: 2.1rem; height: 2.1rem; border-radius: 999px; border: 1px solid var(--border-color); cursor: pointer;
+  background: var(--bg-tint); color: var(--text-body); display: flex; align-items: center; justify-content: center;
+  transition: background var(--dur-fast) var(--ease-soft), color var(--dur-fast) var(--ease-soft), border-color var(--dur-fast) var(--ease-soft);
 }
-.theme-toggle:hover { background: var(--border-color); color: var(--ice-400); }
+.theme-toggle:hover { background: var(--border-color); color: var(--ice-400); border-color: var(--ice-500); }
 .theme-toggle svg { width: 1.05rem; height: 1.05rem; }
 .theme-toggle .icon-sun { display: none; }
 :root[data-theme="dark"] .theme-toggle .icon-moon, :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
