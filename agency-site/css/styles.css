@@ -1,7 +1,9 @@
 /* ---------------------------------------------------------------------
-   Comet Builds — icy blue + white design system.
-   Plain CSS, no build step. Colors are custom properties under :root so
-   the whole site can be rebranded by editing the values at the top.
+   Comet Builds — dark, premium design system.
+   Plain CSS, no build step. Colors/motion are custom properties under
+   :root so the whole site (palette + timing) can be retuned from one
+   place. Dark is the primary/default look; a light variant is still
+   available via the nav theme toggle or an explicit OS preference.
 --------------------------------------------------------------------- */
 :root {
   --ice-50: #f5fbfe;
@@ -18,45 +20,64 @@
   --slate-800: #1e2f42;
   --slate-900: #142230;
 
-  --bg-page: #ffffff;
-  --bg-raised: #ffffff;
-  --bg-tint: var(--ice-50);
-  --text-heading: var(--slate-800);
-  --text-body: var(--slate-600);
-  --text-muted: var(--slate-500);
-  --border-color: var(--ice-200);
-  --nav-bg: rgba(255, 255, 255, 0.7);
-  --nav-border: rgba(163, 218, 243, 0.6);
-  --shadow-card: 0 1px 2px 0 rgba(30, 80, 110, 0.06);
+  /* Dark is the default brand look. */
+  --bg-page: #06090d;
+  --bg-raised: #10161f;
+  --bg-tint: #0a0f16;
+  --text-heading: #f1f5f9;
+  --text-body: #9aa7b5;
+  --text-muted: #6b7787;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color-strong: rgba(255, 255, 255, 0.14);
+  --nav-bg: rgba(10, 15, 22, 0.65);
+  --nav-border: rgba(108, 194, 234, 0.18);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --glow-color: 58, 164, 218; /* rgb triplet reused in rgba() glows */
 
-  color-scheme: light;
+  /* Motion: one easing/duration scale used everywhere so animation feels
+     consistent instead of every element having its own timing. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 0.18s;
+  --dur: 0.35s;
+  --dur-slow: 0.7s;
+
+  color-scheme: dark;
   font-family: "Inter", -apple-system, "Segoe UI", ui-sans-serif, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-page: var(--slate-900);
-    --bg-raised: var(--slate-800);
-    --bg-tint: #101d2b;
-    --text-heading: var(--ice-100);
-    --text-body: var(--ice-300);
-    --text-muted: #7fa8bf;
-    --border-color: #24425a;
-    --nav-bg: rgba(20, 34, 48, 0.75);
-    --nav-border: rgba(38, 133, 189, 0.35);
-    color-scheme: dark;
+/* Light variant — used when the visitor's OS prefers light and they
+   haven't explicitly picked a theme, or when they toggle to it manually. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg-page: #ffffff;
+    --bg-raised: #ffffff;
+    --bg-tint: var(--ice-50);
+    --text-heading: var(--slate-800);
+    --text-body: var(--slate-600);
+    --text-muted: var(--slate-500);
+    --border-color: var(--ice-200);
+    --border-color-strong: var(--ice-300);
+    --nav-bg: rgba(255, 255, 255, 0.7);
+    --nav-border: rgba(163, 218, 243, 0.6);
+    --shadow-card: 0 1px 2px 0 rgba(30, 80, 110, 0.06);
+    color-scheme: light;
   }
 }
 :root[data-theme="dark"] {
-  --bg-page: var(--slate-900); --bg-raised: var(--slate-800); --bg-tint: #101d2b;
-  --text-heading: var(--ice-100); --text-body: var(--ice-300); --text-muted: #7fa8bf;
-  --border-color: #24425a; --nav-bg: rgba(20, 34, 48, 0.75); --nav-border: rgba(38, 133, 189, 0.35);
+  --bg-page: #06090d; --bg-raised: #10161f; --bg-tint: #0a0f16;
+  --text-heading: #f1f5f9; --text-body: #9aa7b5; --text-muted: #6b7787;
+  --border-color: rgba(255, 255, 255, 0.08); --border-color-strong: rgba(255, 255, 255, 0.14);
+  --nav-bg: rgba(10, 15, 22, 0.65); --nav-border: rgba(108, 194, 238, 0.18);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.4);
   color-scheme: dark;
 }
 :root[data-theme="light"] {
   --bg-page: #ffffff; --bg-raised: #ffffff; --bg-tint: var(--ice-50);
   --text-heading: var(--slate-800); --text-body: var(--slate-600); --text-muted: var(--slate-500);
-  --border-color: var(--ice-200); --nav-bg: rgba(255, 255, 255, 0.7); --nav-border: rgba(163, 218, 243, 0.6);
+  --border-color: var(--ice-200); --border-color-strong: var(--ice-300);
+  --nav-bg: rgba(255, 255, 255, 0.7); --nav-border: rgba(163, 218, 243, 0.6);
+  --shadow-card: 0 1px 2px 0 rgba(30, 80, 110, 0.06);
   color-scheme: light;
 }
 
@@ -67,7 +88,19 @@ html { scroll-behavior: smooth; }
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
 
-body { margin: 0; background: var(--bg-page); color: var(--text-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+/* Subtle whole-page fade-in on load, toggled by js/script.js adding
+   `.loaded` to <body> once the page is ready. Kept short and un-fussy. */
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-soft);
+}
+body.loaded { opacity: 1; }
+
 h1, h2, h3 { margin: 0; font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; color: var(--text-heading); }
 p { margin: 0; }
 a { color: inherit; }
@@ -82,23 +115,36 @@ button { font: inherit; }
 .nav-outer { position: sticky; top: 1rem; z-index: 50; padding: 0 0.5rem; }
 .nav {
   max-width: 80rem; margin: 0 auto; border-radius: 28px; border: 1px solid var(--nav-border);
-  background: var(--nav-bg); backdrop-filter: blur(10px);
+  background: var(--nav-bg); backdrop-filter: blur(14px);
   display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.6rem 0.6rem 1.1rem;
+  transition: border-color var(--dur) var(--ease-soft), background var(--dur) var(--ease-soft);
 }
 .brand { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
-.brand-mark svg { width: 26px; height: 26px; color: var(--ice-500); }
+.brand-mark svg { width: 26px; height: 26px; color: var(--ice-500); transition: filter var(--dur) var(--ease-soft); }
+.brand:hover .brand-mark svg { filter: drop-shadow(0 0 6px rgba(var(--glow-color), 0.6)); }
 .brand-name { font-weight: 800; font-size: 1.05rem; color: var(--text-heading); letter-spacing: -0.01em; }
+
+/* Nav links get an animated underline instead of an instant color swap —
+   small, tasteful micro-interaction reused for footer links too. */
 .nav-links { display: none; align-items: center; gap: 1.75rem; font-size: 0.88rem; font-weight: 600; color: var(--text-body); }
-.nav-links a { text-decoration: none; }
-.nav-links a:hover { color: var(--ice-600); }
+.nav-links a, .footer-meta a {
+  position: relative; text-decoration: none; transition: color var(--dur) var(--ease-soft);
+}
+.nav-links a::after, .footer-meta a::after {
+  content: ""; position: absolute; left: 0; right: 100%; bottom: -3px; height: 1px;
+  background: currentColor; transition: right var(--dur) var(--ease-out);
+}
+.nav-links a:hover, .footer-meta a:hover { color: var(--ice-400); }
+.nav-links a:hover::after, .footer-meta a:hover::after { right: 0; }
 @media (min-width: 768px) { .nav-links { display: flex; } }
+
 .nav-right { display: flex; align-items: center; gap: 0.5rem; }
 .theme-toggle {
   width: 2.1rem; height: 2.1rem; border-radius: 999px; border: none; cursor: pointer;
   background: transparent; color: var(--text-body); display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s ease;
+  transition: background var(--dur-fast) var(--ease-soft), color var(--dur-fast) var(--ease-soft);
 }
-.theme-toggle:hover { background: var(--border-color); }
+.theme-toggle:hover { background: var(--border-color); color: var(--ice-400); }
 .theme-toggle svg { width: 1.05rem; height: 1.05rem; }
 .theme-toggle .icon-sun { display: none; }
 :root[data-theme="dark"] .theme-toggle .icon-moon, :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
@@ -113,20 +159,52 @@ button { font: inherit; }
   display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
   border-radius: 10px; padding: 0.75rem 1.15rem; font-size: 0.88rem; font-weight: 700;
   text-decoration: none; border: 1px solid transparent; cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+  transition: background var(--dur) var(--ease-soft), transform var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-soft), border-color var(--dur) var(--ease-soft);
 }
-.btn:active { transform: scale(0.98); }
+.btn:active { transform: scale(0.97); }
 .btn-primary { background: var(--ice-500); color: #ffffff; }
-.btn-primary:hover { background: var(--ice-600); }
+.btn-primary:hover {
+  background: var(--ice-600);
+  transform: translateY(-1px) scale(1.015);
+  box-shadow: 0 10px 28px -8px rgba(var(--glow-color), 0.55), 0 0 0 1px rgba(var(--glow-color), 0.18);
+}
 .btn-secondary { background: var(--ice-100); color: var(--text-heading); border-color: var(--border-color); }
-:root[data-theme="dark"] .btn-secondary, :root:not([data-theme]) .btn-secondary { background: #1c3448; color: var(--ice-100); }
+:root[data-theme="dark"] .btn-secondary, :root:not([data-theme]) .btn-secondary { background: rgba(255, 255, 255, 0.04); color: var(--ice-100); border-color: var(--border-color); }
 @media (prefers-color-scheme: light) { :root:not([data-theme]) .btn-secondary { background: var(--ice-100); color: var(--text-heading); } }
-.btn-secondary:hover { filter: brightness(1.08); }
-.btn svg { width: 1rem; height: 1rem; transition: transform 0.2s ease; }
+.btn-secondary:hover { border-color: var(--ice-500); transform: translateY(-1px); box-shadow: 0 6px 18px -10px rgba(var(--glow-color), 0.4); }
+.btn svg { width: 1rem; height: 1rem; transition: transform var(--dur) var(--ease-out); }
 .btn-primary:hover svg { transform: translateX(2px); }
 
 /* ---------------- HERO ---------------- */
-.hero { padding: 2.5rem 0 4rem; }
+.hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 2.5rem 0 4rem;
+  background: radial-gradient(1100px 560px at 15% -10%, rgba(var(--glow-color), 0.16), transparent 60%), var(--bg-page);
+  --mx: 50%;
+  --my: 10%;
+}
+/* Canvas paints a slow starfield + comet streak behind the hero copy —
+   see js/script.js `initHeroCanvas`. Purely decorative, never intercepts
+   clicks, and is skipped entirely for prefers-reduced-motion. */
+.hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+/* Soft radial glow that follows the cursor within the hero — the one
+   extra "layered depth" touch, desktop-only (see initCursorGlow). */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(480px circle at var(--mx) var(--my), rgba(var(--glow-color), 0.14), transparent 65%);
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-soft);
+}
+.hero:hover::before { opacity: 1; }
+.hero .wrap.hero-grid { position: relative; z-index: 2; }
+
 .hero-grid { display: grid; gap: 2.5rem; align-items: center; }
 @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 1fr; gap: 3rem; } }
 .eyebrow-badge {
@@ -134,11 +212,15 @@ button { font: inherit; }
   padding: 0.3rem 0.75rem; border-radius: 999px; background: var(--bg-tint); border: 1px solid var(--border-color);
   font-size: 0.75rem; font-weight: 700; color: var(--text-body);
 }
-.eyebrow-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--ice-500); }
+.eyebrow-dot { width: 6px; height: 6px; border-radius: 999px; background: var(--ice-500); box-shadow: 0 0 8px rgba(var(--glow-color), 0.8); }
 .hero h1 { font-size: clamp(2rem, 4.2vw, 3.4rem); line-height: 1.06; }
 .hero .sub { margin-top: 0.9rem; font-size: 1.1rem; color: var(--text-body); max-width: 34rem; }
 .hero-ctas { margin-top: 1.6rem; display: grid; gap: 0.65rem; width: 100%; }
 @media (min-width: 480px) { .hero-ctas { grid-auto-flow: column; justify-content: start; } }
+
+/* Hero entrance: headline/CTAs/etc. stagger in on load via .hero .reveal
+   (JS marks these is-visible immediately, no scroll trigger needed). */
+.hero .reveal { transition-duration: var(--dur-slow); transition-timing-function: var(--ease-out); }
 
 .social-proof { margin-top: 2.2rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1.1rem; }
 .avatar-stack { display: flex; }
@@ -152,18 +234,29 @@ button { font: inherit; }
 
 .hero-visual {
   aspect-ratio: 4/3.2; border-radius: 20px; overflow: hidden; position: relative;
-  background: repeating-linear-gradient(135deg, transparent, transparent 22px, rgba(108,194,234,0.14) 22px, rgba(108,194,234,0.14) 24px), linear-gradient(155deg, var(--slate-800), var(--slate-900));
+  background: repeating-linear-gradient(135deg, transparent, transparent 22px, rgba(108, 194, 234, 0.14) 22px, rgba(108, 194, 234, 0.14) 24px), linear-gradient(155deg, var(--slate-800), var(--slate-900));
+  border: 1px solid var(--border-color);
   display: flex; align-items: flex-end; padding: 1.5rem;
+  transition: border-color var(--dur) var(--ease-soft), transform var(--dur-slow) var(--ease-out);
 }
-.hero-visual-label { position: relative; z-index: 1; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.8); border: 1px dashed rgba(255,255,255,0.4); border-radius: 8px; padding: 0.4rem 0.7rem; }
+.hero-visual:hover { border-color: var(--border-color-strong); transform: translateY(-2px); }
+.hero-visual-label { position: relative; z-index: 1; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.8); border: 1px dashed rgba(255, 255, 255, 0.4); border-radius: 8px; padding: 0.4rem 0.7rem; }
 
 /* ---------------- TRUST STRIP ---------------- */
 .trust-strip { padding: 2.2rem 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
 .trust-strip-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2.2rem 3rem; }
-.trust-item { font-weight: 800; font-size: 1.05rem; color: var(--text-muted); letter-spacing: -0.01em; opacity: 0.75; }
+.trust-item { font-weight: 800; font-size: 1.05rem; color: var(--text-muted); letter-spacing: -0.01em; opacity: 0.75; transition: opacity var(--dur) var(--ease-soft), color var(--dur) var(--ease-soft); }
+.trust-item:hover { opacity: 1; color: var(--text-body); }
 
-/* scroll-reveal (JS toggles .is-visible) */
-.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
+/* ---------------- SCROLL REVEAL ---------------- */
+/* JS (IntersectionObserver) toggles .is-visible when an element enters the
+   viewport. One consistent fade + slight upward motion, no per-section
+   one-off timings. */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
 /* ---------------- SECTIONS ---------------- */
@@ -171,7 +264,7 @@ button { font: inherit; }
 .block-tint { background: var(--bg-tint); }
 .block-divider { border-top: 1px solid var(--border-color); }
 .section-head { max-width: 34rem; margin: 0 auto 2.5rem; text-align: center; }
-.section-eyebrow { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ice-600); margin-bottom: 0.6rem; }
+.section-eyebrow { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ice-500); margin-bottom: 0.6rem; }
 .section-head h2 { font-size: clamp(1.6rem, 2.8vw, 2.1rem); }
 .section-head p { margin-top: 0.75rem; color: var(--text-body); }
 
@@ -181,53 +274,69 @@ button { font: inherit; }
 .grid-cards { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 @media (min-width: 640px) { .grid-cards { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1024px) { .grid-cards { grid-template-columns: repeat(3, 1fr); } }
+
+/* The grid itself no longer fades as one flat block — each card gets its
+   own staggered entrance for a more premium feel. The .reveal class still
+   triggers visibility via JS; we just cancel its default motion on the
+   grid wrapper and apply per-card transitions with nth-child delays. */
+.grid-cards.reveal { opacity: 1; transform: none; }
+.grid-cards .card {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.grid-cards.is-visible .card { opacity: 1; transform: none; }
+.grid-cards.is-visible .card:nth-child(1) { transition-delay: 0.05s; }
+.grid-cards.is-visible .card:nth-child(2) { transition-delay: 0.12s; }
+.grid-cards.is-visible .card:nth-child(3) { transition-delay: 0.19s; }
+.grid-cards.is-visible .card:nth-child(4) { transition-delay: 0.26s; }
+
 .card {
   border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-raised);
   padding: 1.5rem; height: 100%; box-shadow: var(--shadow-card);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: box-shadow var(--dur) var(--ease-soft), transform var(--dur-slow) var(--ease-out),
+    border-color var(--dur) var(--ease-soft), opacity var(--dur-slow) var(--ease-out);
 }
-.card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px -12px rgba(20,50,70,0.18); }
-.card-icon { margin-bottom: 1rem; width: 2.5rem; height: 2.5rem; border-radius: 10px; background: var(--ice-500); color: #ffffff; display: flex; align-items: center; justify-content: center; }
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(var(--glow-color), 0.4);
+  box-shadow: var(--shadow-card), 0 24px 48px -24px rgba(0, 0, 0, 0.6), 0 0 28px -10px rgba(var(--glow-color), 0.3);
+}
+.card-icon { margin-bottom: 1rem; width: 2.5rem; height: 2.5rem; border-radius: 10px; background: var(--ice-500); color: #ffffff; display: flex; align-items: center; justify-content: center; transition: box-shadow var(--dur) var(--ease-soft); }
+.card:hover .card-icon { box-shadow: 0 0 20px -2px rgba(var(--glow-color), 0.7); }
 .card h3 { font-size: 1.05rem; }
 .card p { margin-top: 0.4rem; font-size: 0.9rem; color: var(--text-body); }
 
 /* ---------------- TIMELINE ---------------- */
 .timeline { position: relative; max-width: 44rem; margin: 0 auto; }
 .timeline-track { position: absolute; left: 19px; top: 0; height: 100%; width: 2px; background: var(--border-color); border-radius: 2px; }
-.timeline-fill { position: absolute; inset: 0 0 auto 0; width: 2px; height: 0%; background: var(--ice-500); border-radius: 2px; transition: height 0.3s ease-out; }
+.timeline-fill { position: absolute; inset: 0 0 auto 0; width: 2px; height: 0%; background: linear-gradient(var(--ice-400), var(--ice-600)); border-radius: 2px; transition: height 0.3s var(--ease-soft); box-shadow: 0 0 12px rgba(var(--glow-color), 0.5); }
 .timeline-list { display: flex; flex-direction: column; gap: 2.25rem; }
 .timeline-item { display: flex; gap: 1.25rem; }
 .timeline-num {
   position: relative; z-index: 1; flex: none; width: 2.5rem; height: 2.5rem; border-radius: 10px;
   background: var(--bg-raised); border: 1px solid var(--border-color); box-shadow: var(--shadow-card);
-  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: var(--ice-600);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; color: var(--ice-400);
+  transition: border-color var(--dur) var(--ease-soft), box-shadow var(--dur) var(--ease-soft);
 }
+.timeline-item:hover .timeline-num { border-color: rgba(var(--glow-color), 0.5); box-shadow: var(--shadow-card), 0 0 16px -4px rgba(var(--glow-color), 0.5); }
 .timeline-item h3 { font-size: 1.05rem; }
 .timeline-item p { margin-top: 0.2rem; font-size: 0.92rem; color: var(--text-body); }
-
-/* ---------------- PORTFOLIO ---------------- */
-.portfolio-img {
-  margin-bottom: 1rem; aspect-ratio: 16/10; border-radius: 12px;
-  border: 1px dashed var(--border-color); background: var(--bg-tint);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.82rem; color: var(--text-muted);
-}
 
 /* ---------------- TESTIMONIALS ---------------- */
 .testi-wrap { max-width: 42rem; margin: 0 auto; text-align: center; }
 .testi-slide { min-height: 200px; display: none; }
-.testi-slide.active { display: block; animation: fade-up 0.4s ease-out; }
-@keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.testi-slide.active { display: block; animation: fade-up var(--dur-slow) var(--ease-out); }
+@keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 .testi-stars { display: flex; justify-content: center; gap: 0.2rem; margin-bottom: 1rem; }
-.testi-stars svg { width: 1rem; height: 1rem; color: var(--ice-500); }
+.testi-stars svg { width: 1rem; height: 1rem; color: var(--ice-400); }
 .testi-quote { font-size: clamp(1.05rem, 2.2vw, 1.3rem); line-height: 1.6; color: var(--text-heading); font-weight: 600; }
 .testi-person { margin-top: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 0.65rem; }
 .testi-avatar { width: 2.25rem; height: 2.25rem; border-radius: 999px; background: var(--ice-500); color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
 .testi-name { font-weight: 700; color: var(--text-heading); font-size: 0.92rem; }
 .testi-org { font-size: 0.82rem; color: var(--text-muted); }
 .testi-dots { margin-top: 1.75rem; display: flex; justify-content: center; gap: 0.4rem; }
-.testi-dot { height: 6px; width: 6px; border-radius: 999px; background: var(--border-color); border: none; cursor: pointer; padding: 0; transition: width 0.2s ease, background 0.2s ease; }
-.testi-dot.active { width: 20px; background: var(--ice-500); }
+.testi-dot { height: 6px; width: 6px; border-radius: 999px; background: var(--border-color); border: none; cursor: pointer; padding: 0; transition: width var(--dur) var(--ease-soft), background var(--dur) var(--ease-soft); }
+.testi-dot.active { width: 20px; background: var(--ice-500); box-shadow: 0 0 8px rgba(var(--glow-color), 0.6); }
 .testi-dot:hover:not(.active) { background: var(--ice-300); }
 
 /* ---------------- CONTACT ---------------- */
@@ -236,17 +345,19 @@ button { font: inherit; }
 .contact-form { margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; max-width: 40rem; margin-left: auto; margin-right: auto; }
 .row-2 { display: flex; flex-direction: column; gap: 1rem; }
 @media (min-width: 640px) { .row-2 { flex-direction: row; } }
-.field { width: 100%; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-tint); padding: 0.8rem 1rem; color: var(--text-heading); font: inherit; }
+.field {
+  width: 100%; border-radius: 10px; border: 1px solid var(--border-color);
+  background: var(--bg-tint); padding: 0.8rem 1rem; color: var(--text-heading); font: inherit;
+  transition: border-color var(--dur) var(--ease-soft), box-shadow var(--dur) var(--ease-soft);
+}
 .field::placeholder { color: var(--text-muted); }
-.field:focus { outline: none; border-color: var(--ice-500); box-shadow: 0 0 0 3px rgba(58,164,218,0.25); }
+.field:focus { outline: none; border-color: var(--ice-500); box-shadow: 0 0 0 3px rgba(var(--glow-color), 0.25); }
 textarea.field { resize: vertical; }
 .success-box { border-radius: 14px; border: 1px solid var(--border-color); background: var(--bg-tint); padding: 2rem; text-align: center; max-width: 40rem; margin: 2rem auto 0; }
-.form-error { color: #c0362c; font-size: 0.85rem; font-weight: 600; }
+.form-error { color: #f28b7d; font-size: 0.85rem; font-weight: 600; }
 
 .footer-meta {
   margin-top: 3rem; padding-top: 1.75rem; border-top: 1px solid var(--border-color);
   display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
   font-size: 0.85rem; color: var(--text-muted); text-align: center;
 }
-.footer-meta a { text-decoration: none; font-weight: 600; }
-.footer-meta a:hover { color: var(--ice-600); }
