@@ -114,11 +114,12 @@ body.loaded { opacity: 1; }
 /* ---------------- AMBIENT / INTERACTIVE LAYERS ----------------
    Three fixed, full-viewport, pointer-events:none layers, all driven from
    js/script.js and all skipped for prefers-reduced-motion:
-   - .bg-canvas   — quiet starfield + comet, painted above every section
-                    but blended additively (mix-blend-mode: screen) so it
-                    reads as light glinting through, visible over every
-                    section's own background instead of being hidden
-                    behind opaque section colors
+   - .bg-canvas   — quiet starfield + comet, painted directly on top of
+                    every section (z-index above normal page content) so
+                    it's always visible no matter which section is on
+                    screen. The canvas itself is transparent except for
+                    the stars/comet pixels, so normal alpha compositing
+                    is all that's needed here — no blend-mode required.
    - #cursorGlow  — soft blue glow that follows the pointer anywhere on
                     the page (radial-gradient reads --mx/--my, set on
                     :root by a document-wide mousemove listener)
@@ -129,9 +130,8 @@ body.loaded { opacity: 1; }
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 5;
+  z-index: 20;
   pointer-events: none;
-  mix-blend-mode: screen;
   transition: opacity var(--dur-slow) var(--ease-soft);
 }
 /* The starfield/comet is a dark-sky effect — hide it in light mode rather
@@ -146,7 +146,7 @@ body.loaded { opacity: 1; }
   inset: 0;
   z-index: 30;
   pointer-events: none;
-  background: radial-gradient(620px circle at var(--mx) var(--my), rgba(var(--glow-color), 0.22), transparent 70%);
+  background: radial-gradient(100px circle at var(--mx) var(--my), rgba(var(--glow-color), 0.22), transparent 70%);
   opacity: 0;
   transition: opacity var(--dur-slow) var(--ease-soft);
 }
@@ -296,6 +296,7 @@ button { font: inherit; }
 }
 .hero-visual:hover { border-color: var(--border-color-strong); transform: translateY(-2px); }
 .hero-visual-label { position: relative; z-index: 1; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.8); border: 1px dashed rgba(255, 255, 255, 0.4); border-radius: 8px; padding: 0.4rem 0.7rem; }
+.hero-visual-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
 /* ---------------- TRUST STRIP ---------------- */
 .trust-strip { padding: 2.2rem 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
