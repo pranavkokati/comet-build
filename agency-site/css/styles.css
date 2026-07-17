@@ -169,6 +169,7 @@ button { font: inherit; }
 /* ---------------- SECTIONS ---------------- */
 .block { padding: 4.5rem 0; }
 .block-tint { background: var(--bg-tint); }
+.block-divider { border-top: 1px solid var(--border-color); }
 .section-head { max-width: 34rem; margin: 0 auto 2.5rem; text-align: center; }
 .section-eyebrow { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ice-600); margin-bottom: 0.6rem; }
 .section-head h2 { font-size: clamp(1.6rem, 2.8vw, 2.1rem); }
@@ -240,6 +241,7 @@ button { font: inherit; }
 .field:focus { outline: none; border-color: var(--ice-500); box-shadow: 0 0 0 3px rgba(58,164,218,0.25); }
 textarea.field { resize: vertical; }
 .success-box { border-radius: 14px; border: 1px solid var(--border-color); background: var(--bg-tint); padding: 2rem; text-align: center; max-width: 40rem; margin: 2rem auto 0; }
+.form-error { color: #c0362c; font-size: 0.85rem; font-weight: 600; }
 
 .footer-meta {
   margin-top: 3rem; padding-top: 1.75rem; border-top: 1px solid var(--border-color);

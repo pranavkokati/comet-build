@@ -167,7 +167,7 @@
     </section>
 
     <!-- TESTIMONIALS -->
-    <section class="block">
+    <section class="block block-divider">
       <div class="wrap">
         <div class="section-head reveal">
           <span class="section-eyebrow">Testimonials</span>
@@ -214,14 +214,17 @@
             <p style="margin-top:0.75rem; color:var(--text-body);">Fill out the form and we'll get back to you in a few business days.</p>
           </div>
 
-          <!-- UI only: no backend wired up. TODO: connect to a real endpoint / form service. -->
-          <form class="contact-form" id="contactForm">
+          <!-- Submits to Formspree so messages land in your inbox — no backend needed.
+               TODO: replace YOUR_FORM_ID below with your own Formspree form ID
+               (sign up free at https://formspree.io, see README for steps). -->
+          <form class="contact-form" id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
             <div class="row-2">
               <input class="field" type="text" name="name" placeholder="Your name" required />
               <input class="field" type="email" name="email" placeholder="Email address" required />
             </div>
             <textarea class="field" name="message" rows="5" placeholder="Tell us about your organization and what you need" required></textarea>
             <button type="submit" class="btn btn-primary" style="margin-top:0.25rem; align-self:flex-start;">Send message</button>
+            <p class="form-error" id="formError" style="display:none;">Something went wrong — please try again or email us directly.</p>
           </form>
           <div class="success-box" id="successBox" style="display:none;">
             <p style="font-weight:700; color:var(--text-heading);">Thanks — we'll be in touch soon.</p>
