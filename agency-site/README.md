@@ -1,98 +1,66 @@
-# Agency Site (placeholder template)
+# Comet Builds — website
 
-A single-page marketing site for a student-run web design agency, built with
-Next.js (App Router), Tailwind CSS, and Framer Motion. The visual design
-(floating pill nav, neutral/yellow/orange palette, rounded cards, social
-proof row) is modeled on [screwfast.uk](https://screwfast.uk). Animated UI
-primitives (hover cards, scroll-linked timeline, animated testimonials) are
-hand-built in a similar spirit to [Aceternity UI](https://ui.aceternity.com/),
-living under `src/components/ui/`.
+A single-page marketing site for Comet Builds, a student-run web design
+studio. Plain HTML/CSS/JS — **no build step, no Node, no npm.** Just open
+the file or upload it to a host.
 
-This is a **placeholder/showcase** site — all copy, images, and portfolio
-items are clearly marked and meant to be swapped out.
+This is a **placeholder/showcase** site — copy, images, and portfolio items
+are marked with `TODO` comments where you should swap in real content.
 
-## Getting started
+## Viewing it
 
-```bash
-npm install
-npm run dev
-```
+Just double-click `index.html`, or open it from your browser
+(`File > Open`). Everything — styles, scripts, fonts — loads from the
+`css/`, `js/`, and Google Fonts, no server required.
 
-Then open http://localhost:3000.
+## Hosting it
 
-## Deploying as static HTML
+Upload the whole `agency-site/` folder (or its contents) to any static
+host:
 
-This project is configured for static export (`output: "export"` in
-`next.config.ts`). To generate plain HTML/CSS/JS files that any static host
-can serve (no Node.js needed to run it — only to build it once):
+- **Netlify** — drag-and-drop the folder onto [app.netlify.com/drop](https://app.netlify.com/drop)
+- **GitHub Pages** — push this folder to a repo and enable Pages in Settings
+- **Cloudflare Pages / Vercel** — connect the repo, no build command needed
+- **Plain shared hosting / FTP** — upload the files as-is; `index.html` is
+  the homepage
 
-```bash
-npm install
-npm run build
-```
-
-This produces an `out/` folder containing static files. Upload that folder's
-contents to any static host — Netlify, GitHub Pages, Cloudflare Pages, S3, or
-a plain shared-hosting FTP server all work. To preview it locally before
-deploying:
-
-```bash
-npx serve out
-```
+There's nothing to configure — it's just static files.
 
 ## Where to edit things
 
-Everything content-related lives in **`src/content.ts`** — open that one file
-to update copy without touching any component code:
+Everything lives in **`index.html`** — open it and edit the text directly
+in the markup (there's no separate content/data file since there's no
+build step to pull one into). Look for these landmarks:
 
-| What | Where in `src/content.ts` |
+| What | Section in `index.html` |
 | --- | --- |
-| Site name / logo / tagline | `site` |
-| Hero headline, subheadline, CTA buttons, trust count | `hero` |
-| Trust strip (row under the hero) | `trust` |
-| Mission / about paragraph | `about` |
-| Service cards | `services` |
-| "How it works" steps | `process` |
-| **Portfolio items (real client work)** | `portfolio` — marked with `TODO` comments, replace once projects launch |
-| Testimonial quotes | `testimonials` |
-| Contact email, socials, form heading | `contact` — `socials` is empty by default; add `{ label, href }` entries to show the row |
+| Site name / logo | `<div class="nav-outer">` near the top |
+| Hero headline, subheadline, CTA buttons | `<section class="hero">` |
+| Trust strip (row under the hero) | `<div class="trust-strip">` |
+| Mission / about paragraph | `<section id="about">` |
+| Service cards | `<section id="services">` |
+| "How it works" steps | the `.timeline` inside the process section |
+| **Portfolio items (real client work)** | `<section id="portfolio">` — marked with `TODO` comments |
+| Testimonial quotes | `<section>` above Contact, `.testi-slide` blocks |
+| Contact email, form heading | `<section id="contact">` |
 
 Other things to customize:
 
-- **Colors** — uses Tailwind's built-in `neutral` (base), `yellow` (brand
-  mark), and `orange` (buttons/links/actions) scales directly in components.
-  To rebrand, either swap those class names for a different built-in
-  Tailwind color, or define custom colors under `theme.extend.colors` in
-  `tailwind.config.js` and update the components to use them.
-- **Dark mode** — toggled by `src/components/ThemeToggle.tsx`, which flips
-  the `dark` class on `<html>` and persists the choice in `localStorage`.
-  Tailwind's `darkMode: ["class"]` in `tailwind.config.js` drives every
-  `dark:` variant in the components.
-- **Fonts** — `src/app/layout.tsx` loads `Inter` via `next/font/google` for
-  both headings and body copy. Swap the import there and the `fontFamily`
-  mapping in `tailwind.config.js` to change the typeface.
-- **Logo image** — set `site.logoSrc` in `content.ts` and update
-  `src/components/Nav.tsx` / `src/components/Hero.tsx` to render an `<img>`
-  instead of the text wordmark.
-- **Portfolio images** — drop files in `public/portfolio/` and set each
-  item's `imageSrc` in `content.ts`; then swap the placeholder `<div>` in
-  `src/components/Portfolio.tsx` for an `<img>`/`next/image`.
-- **Contact form backend** — the form in `src/components/Contact.tsx` is UI
-  only (`handleSubmit` just shows a success message). Wire it up to a real
-  endpoint, API route, or form service when ready.
-
-## Animated UI primitives
-
-`src/components/ui/` contains the reusable animated pieces, each documented
-inline:
-
-- `card-hover-effect.tsx` — hover-tracking highlight for the Services and
-  Portfolio grids
-- `timeline.tsx` — scroll-linked vertical timeline for the process section
-- `animated-testimonials.tsx` — autoplaying quote carousel
-- `fade-in-section.tsx` — shared scroll-reveal wrapper (`whileInView`)
-- `button.tsx` — primary/secondary CTA button
-
-If you'd rather pull in the official Aceternity components instead of these
-hand-built equivalents, they can be added individually via the shadcn CLI,
-e.g. `npx shadcn@latest add <component-url-from-ui.aceternity.com>`.
+- **Colors** — all defined as CSS custom properties at the top of
+  `css/styles.css` (`--ice-*` for the blue accent, `--slate-*` for text).
+  Change the hex values there to rebrand the whole site, light and dark
+  mode both included.
+- **Dark mode** — the moon/sun button in the nav toggles a `data-theme`
+  attribute on `<html>` (see `js/script.js`); `prefers-color-scheme` is
+  respected automatically if the visitor hasn't toggled it.
+- **Fonts** — loaded via the Google Fonts `<link>` tags in `<head>`
+  (`Inter`). Swap the `href` and the `font-family` in `css/styles.css` to
+  change the typeface.
+- **Portfolio images** — drop image files anywhere in the project (e.g. an
+  `images/` folder) and replace the placeholder `<div class="portfolio-img">`
+  blocks with `<img src="images/your-photo.jpg" alt="...">`.
+- **Contact form backend** — the form in the Contact section is UI only
+  (`js/script.js` just shows a success message on submit). To actually
+  receive submissions, either wire it up to a form service (Netlify Forms,
+  Formspree, etc.) by adding the right `action`/`data-*` attributes, or
+  point it at your own backend endpoint.
