@@ -98,16 +98,17 @@ contactForm.addEventListener("submit", function (e) {
     });
 });
 
-// ---- Hero canvas: a quiet starfield with one comet drifting through
-// every so often. Purely decorative — sits behind the hero copy. Skipped
-// entirely for prefers-reduced-motion, and paused via IntersectionObserver
-// whenever the hero scrolls out of view so it isn't burning CPU/GPU on a
-// section nobody's looking at. ----
-(function initHeroCanvas() {
-  var canvas = document.getElementById("heroCanvas");
-  var hero = document.querySelector(".hero");
-  if (!canvas || !hero) return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+// ---- Background canvas: a quiet starfield with one comet drifting all
+// the way across the viewport every so often. Fixed to the screen (not
+// the hero), so it plays behind every section as you scroll, not just
+// the top. Purely decorative — skipped entirely for prefers-reduced-motion,
+// and paused via the Page Visibility API when the tab isn't active. ----
+(function initBackgroundCanvas() {
+  var canvas = document.getElementById("bgCanvas");
+  if (!canvas || prefersReducedMotion) return;
 
   var ctx = canvas.getContext("2d");
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -119,7 +120,7 @@ contactForm.addEventListener("submit", function (e) {
   var rafId = null;
 
   function seedStars(w, h) {
-    var count = Math.round((w * h) / 9000);
+    var count = Math.round((w * h) / 11000);
     stars = [];
     for (var i = 0; i < count; i++) {
       stars.push({
@@ -134,22 +135,23 @@ contactForm.addEventListener("submit", function (e) {
   }
 
   function resize() {
-    var rect = hero.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    canvas.style.width = rect.width + "px";
-    canvas.style.height = rect.height + "px";
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    seedStars(rect.width, rect.height);
+    seedStars(w, h);
   }
 
   function spawnComet(w, h) {
     comet = {
       x: -60,
-      y: h * (0.08 + Math.random() * 0.32),
-      vx: w / 420,
-      vy: (h * 0.16) / 420,
-      len: 90,
+      y: h * (0.05 + Math.random() * 0.5),
+      vx: w / 480,
+      vy: (h * 0.12) / 480,
+      len: 100,
     };
   }
 
@@ -212,35 +214,161 @@ contactForm.addEventListener("submit", function (e) {
 
   resize();
   window.addEventListener("resize", resize, { passive: true });
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) stop();
+    else start();
+  });
 
-  var heroObserver = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) start();
-        else stop();
-      });
-    },
-    { threshold: 0 },
-  );
-  heroObserver.observe(hero);
+  start();
 })();
 
-// ---- Cursor-following glow inside the hero — the one extra "layered
-// depth" touch. Desktop/mouse only, and skipped for reduced-motion. Sets
-// CSS custom properties that a radial-gradient in styles.css reads
-// (.hero::before), so the actual paint work stays on the CSS side. ----
+// ---- Cursor glow: a soft blue light that follows the pointer across the
+// whole page (see #cursorGlow in styles.css), not just the hero. Desktop
+// mouse only, skipped for reduced-motion. ----
 (function initCursorGlow() {
-  var hero = document.querySelector(".hero");
-  if (!hero) return;
-  var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!canHover || prefersReducedMotion) return;
+  var glow = document.getElementById("cursorGlow");
+  if (!glow || !canHover || prefersReducedMotion) return;
 
-  hero.addEventListener("mousemove", function (e) {
-    var rect = hero.getBoundingClientRect();
-    var x = ((e.clientX - rect.left) / rect.width) * 100;
-    var y = ((e.clientY - rect.top) / rect.height) * 100;
-    hero.style.setProperty("--mx", x + "%");
-    hero.style.setProperty("--my", y + "%");
+  document.addEventListener("mousemove", function (e) {
+    var x = (e.clientX / window.innerWidth) * 100;
+    var y = (e.clientY / window.innerHeight) * 100;
+    document.documentElement.style.setProperty("--mx", x + "%");
+    document.documentElement.style.setProperty("--my", y + "%");
+    glow.classList.add("is-active");
   });
+  document.addEventListener("mouseleave", function () {
+    glow.classList.remove("is-active");
+  });
+})();
+
+// ---- Click-and-drag sparkle trail: a little bit of fun, not a core
+// feature — press and drag anywhere to leave a trail of fading sparkles.
+// Uses pointer events so it works with touch too. Skipped for
+// prefers-reduced-motion (dragging still works, it just doesn't spawn
+// particles). ----
+(function initSparkleTrail() {
+  var canvas = document.getElementById("fxCanvas");
+  if (!canvas || prefersReducedMotion) return;
+
+  var ctx = canvas.getContext("2d");
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var particles = [];
+  var isDragging = false;
+  var running = false;
+  var rafId = null;
+  var MAX_PARTICLES = 160;
+
+  function resize() {
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener("resize", resize, { passive: true });
+
+  function spawnSparkle(x, y) {
+    if (particles.length >= MAX_PARTICLES) return;
+    var angle = Math.random() * Math.PI * 2;
+    var speed = Math.random() * 0.6 + 0.15;
+    particles.push({
+      x: x,
+      y: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 0.35, // gentle upward drift
+      size: Math.random() * 2 + 1.5,
+      life: 1,
+      decay: Math.random() * 0.02 + 0.018,
+      hue: Math.random() < 0.5 ? "160, 220, 250" : "255, 255, 255",
+    });
+  }
+
+  function draw() {
+    var w = canvas.width / dpr;
+    var h = canvas.height / dpr;
+    ctx.clearRect(0, 0, w, h);
+
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.006; // slight gravity so sparkles settle rather than drift forever
+      p.life -= p.decay;
+      if (p.life <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+      var r = p.size * p.life;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, Math.max(r, 0.1), 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(" + p.hue + ", " + p.life + ")";
+      ctx.shadowColor = "rgba(" + p.hue + ", " + p.life * 0.8 + ")";
+      ctx.shadowBlur = 6;
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+
+    if (particles.length > 0 || isDragging) {
+      rafId = requestAnimationFrame(draw);
+    } else {
+      running = false;
+    }
+  }
+
+  function ensureRunning() {
+    if (running) return;
+    running = true;
+    rafId = requestAnimationFrame(draw);
+  }
+
+  function handleMove(x, y) {
+    if (!isDragging) return;
+    spawnSparkle(x, y);
+    spawnSparkle(x + (Math.random() - 0.5) * 4, y + (Math.random() - 0.5) * 4);
+    ensureRunning();
+  }
+
+  window.addEventListener("pointerdown", function (e) {
+    isDragging = true;
+    handleMove(e.clientX, e.clientY);
+  });
+  window.addEventListener("pointermove", function (e) {
+    handleMove(e.clientX, e.clientY);
+  });
+  window.addEventListener("pointerup", function () {
+    isDragging = false;
+  });
+  window.addEventListener("pointercancel", function () {
+    isDragging = false;
+  });
+})();
+
+// ---- "Click me!" hint: follows the cursor for the first few seconds (or
+// until the visitor's first click, whichever comes first), pointing them
+// toward the click-and-drag sparkle trail above. Never shown again after
+// that — this is a one-time nudge, not a persistent UI element. ----
+(function initClickHint() {
+  var hint = document.getElementById("clickHint");
+  if (!hint || !canHover || prefersReducedMotion) return;
+
+  var dismissed = false;
+  function dismiss() {
+    if (dismissed) return;
+    dismissed = true;
+    hint.classList.remove("is-visible");
+    document.removeEventListener("mousemove", onMove);
+    document.removeEventListener("pointerdown", dismiss);
+  }
+  function onMove(e) {
+    document.documentElement.style.setProperty("--hx", e.clientX + "px");
+    document.documentElement.style.setProperty("--hy", e.clientY + "px");
+    hint.classList.add("is-visible");
+  }
+
+  document.addEventListener("mousemove", onMove);
+  document.addEventListener("pointerdown", dismiss);
+  setTimeout(dismiss, 5000); // don't linger forever if nobody moves the mouse near it
 })();
