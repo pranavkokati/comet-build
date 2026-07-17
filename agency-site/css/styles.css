@@ -42,6 +42,11 @@
   --dur: 0.35s;
   --dur-slow: 0.7s;
 
+  /* Cursor-glow position, updated live from js/script.js as the pointer
+     moves anywhere on the page (not just the hero). */
+  --mx: 50%;
+  --my: 30%;
+
   color-scheme: dark;
   font-family: "Inter", -apple-system, "Segoe UI", ui-sans-serif, sans-serif;
 }
@@ -100,6 +105,74 @@ body {
   transition: opacity 0.6s var(--ease-soft);
 }
 body.loaded { opacity: 1; }
+
+/* ---------------- AMBIENT / INTERACTIVE LAYERS ----------------
+   Three fixed, full-viewport, pointer-events:none layers, all driven from
+   js/script.js and all skipped for prefers-reduced-motion:
+   - .bg-canvas   — quiet starfield + comet, sits behind every section
+   - #cursorGlow  — soft blue glow that follows the pointer anywhere on
+                    the page (radial-gradient reads --mx/--my, set on
+                    :root by a document-wide mousemove listener)
+   - .fx-canvas   — click-and-drag sparkle trail, sits above everything
+   None of these ever intercept clicks; they're purely decorative. */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease-soft);
+}
+/* The starfield/comet is a dark-sky effect — hide it in light mode rather
+   than have stars float over a white page. */
+:root[data-theme="light"] .bg-canvas { opacity: 0; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .bg-canvas { opacity: 0; }
+}
+
+#cursorGlow {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  background: radial-gradient(560px circle at var(--mx) var(--my), rgba(var(--glow-color), 0.12), transparent 68%);
+  opacity: 0;
+  transition: opacity var(--dur-slow) var(--ease-soft);
+}
+#cursorGlow.is-active { opacity: 1; }
+
+.fx-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 90;
+  pointer-events: none;
+}
+
+/* One-time "Click me!" hint that follows the cursor until the visitor's
+   first click/tap, then never appears again for the session. */
+#clickHint {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 95;
+  pointer-events: none;
+  transform: translate(var(--hx, 0), var(--hy, 0)) translate(14px, -8px);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-color-strong);
+  color: var(--text-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease-soft);
+  white-space: nowrap;
+}
+#clickHint.is-visible { opacity: 1; }
 
 h1, h2, h3 { margin: 0; font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; color: var(--text-heading); }
 p { margin: 0; }
@@ -183,26 +256,7 @@ button { font: inherit; }
   isolation: isolate;
   padding: 2.5rem 0 4rem;
   background: radial-gradient(1100px 560px at 15% -10%, rgba(var(--glow-color), 0.16), transparent 60%), var(--bg-page);
-  --mx: 50%;
-  --my: 10%;
 }
-/* Canvas paints a slow starfield + comet streak behind the hero copy —
-   see js/script.js `initHeroCanvas`. Purely decorative, never intercepts
-   clicks, and is skipped entirely for prefers-reduced-motion. */
-.hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-/* Soft radial glow that follows the cursor within the hero — the one
-   extra "layered depth" touch, desktop-only (see initCursorGlow). */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: radial-gradient(480px circle at var(--mx) var(--my), rgba(var(--glow-color), 0.14), transparent 65%);
-  opacity: 0;
-  transition: opacity var(--dur-slow) var(--ease-soft);
-}
-.hero:hover::before { opacity: 1; }
 .hero .wrap.hero-grid { position: relative; z-index: 2; }
 
 .hero-grid { display: grid; gap: 2.5rem; align-items: center; }
@@ -289,6 +343,12 @@ button { font: inherit; }
 .grid-cards.is-visible .card:nth-child(2) { transition-delay: 0.12s; }
 .grid-cards.is-visible .card:nth-child(3) { transition-delay: 0.19s; }
 .grid-cards.is-visible .card:nth-child(4) { transition-delay: 0.26s; }
+/* `.grid-cards.is-visible .card` above is more specific than a bare
+   `.card:hover`, so without this the resting `transform: none` would
+   silently win and the hover lift below would never actually show once a
+   card had revealed. Matching the same ancestor chain here keeps hover
+   working after the entrance animation finishes. */
+.grid-cards.is-visible .card:hover { transform: translateY(-7px) scale(1.015); }
 
 .card {
   border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-raised);
@@ -296,8 +356,13 @@ button { font: inherit; }
   transition: box-shadow var(--dur) var(--ease-soft), transform var(--dur-slow) var(--ease-out),
     border-color var(--dur) var(--ease-soft), opacity var(--dur-slow) var(--ease-out);
 }
+/* Hover-in uses its own faster, slightly overshooting easing so the "pop"
+   feels responsive; hover-out falls back to .card's slower, gentler
+   transition above for a calmer settle. */
 .card:hover {
-  transform: translateY(-6px);
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow var(--dur) var(--ease-soft),
+    border-color var(--dur) var(--ease-soft);
+  transform: translateY(-7px) scale(1.015);
   border-color: rgba(var(--glow-color), 0.4);
   box-shadow: var(--shadow-card), 0 24px 48px -24px rgba(0, 0, 0, 0.6), 0 0 28px -10px rgba(var(--glow-color), 0.3);
 }
