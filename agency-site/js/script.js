@@ -11,13 +11,19 @@ var root = document.documentElement;
 // image/font loading. ----
 document.body.classList.add("loaded");
 
-// ---- Theme toggle: explicit light/dark, stamped as data-theme on <html> ----
-document.getElementById("themeToggle").addEventListener("click", function () {
-  var current = root.getAttribute("data-theme");
-  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  var isDark = current ? current === "dark" : prefersDark;
-  root.setAttribute("data-theme", isDark ? "light" : "dark");
-});
+// ---- Theme toggle: explicit light/dark, stamped as data-theme on <html>.
+// The button itself has been removed from the nav (site is dark-only for
+// now), so this is guarded to a no-op rather than deleted — dropping the
+// button back into index.html is all it'd take to bring it back. ----
+var themeToggleBtn = document.getElementById("themeToggle");
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener("click", function () {
+    var current = root.getAttribute("data-theme");
+    var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var isDark = current ? current === "dark" : prefersDark;
+    root.setAttribute("data-theme", isDark ? "light" : "dark");
+  });
+}
 
 // ---- Scroll-reveal ----
 var revealEls = document.querySelectorAll(".reveal");
